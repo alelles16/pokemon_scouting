@@ -2,6 +2,7 @@ from flask import Flask
 from routes import api
 from config import Config
 from database import db
+from flasgger import Swagger
 
 app = Flask(__name__)
 
@@ -10,7 +11,9 @@ cfg = Config()
 app.config["SQLALCHEMY_DATABASE_URI"] = cfg.SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+Swagger(app)
 
+# Init db
 db.init_app(app)
 
 app.register_blueprint(api)

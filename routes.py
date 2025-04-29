@@ -28,8 +28,25 @@ def get_or_create_type(type_name: str):
 @api.route("/fetch", methods=["POST"])
 def fetch_all():
     """
-    Fetch all Pokémon from the PokeAPI, store new ones,
-    and return list of created entries.
+    Fetch all Pokémon data and store them
+    ---
+    tags:
+      - Pokémon
+    responses:
+      200:
+        description: List of created Pokémon
+        schema:
+          type: object
+          properties:
+            pokemons:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
     """
     cfg = Config()
     created = []
@@ -69,6 +86,31 @@ def fetch_all():
 def list_all():
     """
     List all Pokémon in the database.
+    ---
+    tags:
+      - Pokémon
+    responses:
+      200:
+        description: A list of all Pokémon.
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              base_experience:
+                type: integer
+              height:
+                type: integer
+              weight:
+                type: integer
+              types:
+                type: array
+                items:
+                  type: string
     """
     pokemons = Pokemon.query.all()
     return jsonify([p.to_dict() for p in pokemons]), 200
@@ -78,6 +120,27 @@ def list_all():
 def get_one(name: str):
     """
     Get a specific Pokémon by name.
+    ---
+    tags:
+      - Pokémon
+    parameters:
+      - name: name
+        in: path
+        type: string
+        required: true
+        description: The name of the Pokémon
+    responses:
+      200:
+        description: Pokémon data
+        schema:
+          $ref: '#/definitions/Pokemon'
+      404:
+        description: Pokémon not found
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
     """
     pokemon = Pokemon.query.filter_by(name=name.lower()).first()
     if not pokemon:
@@ -89,6 +152,31 @@ def get_one(name: str):
 def add_one(name: str):
     """
     Add a specific Pokémon by name and update config.yaml.
+    ---
+    tags:
+      - Pokémon
+    parameters:
+      - name: name
+        in: path
+        type: string
+        required: true
+        description: The name of the Pokémon to add
+    responses:
+      201:
+        description: Pokémon created
+        schema:
+          $ref: '#/definitions/Pokemon'
+      200:
+        description: Pokémon already exists
+        schema:
+          $ref: '#/definitions/Pokemon'
+      404:
+        description: Pokémon not found in PokeAPI
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
     """
     name_lower = name.lower()
     data = get_pokemon(name)
@@ -124,6 +212,29 @@ def add_one(name: str):
 def export_all():
     """
     Export all Pokémon to CSV or JSON format.
+    ---
+    tags:
+      - Pokémon
+    parameters:
+      - name: format
+        in: query
+        type: string
+        required: false
+        description: Output format (csv or json)
+        default: json
+    responses:
+      200:
+        description: List of Pokémon in JSON or CSV file
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Pokemon'
+      200:
+        description: CSV download
+        headers:
+          Content-Disposition:
+            type: string
+            description: Attachment header
     """
     pokemons = Pokemon.query.all()
     fmt = request.args.get("format", "json").lower()
