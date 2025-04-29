@@ -38,7 +38,7 @@ pokemon_scout_app/
 ## Local Setup & Running
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/pokemon-scouting.git
+   git clone https://github.com/alelles16/pokemon_scouting.git
    cd pokemon_scout_app
    ```
 2. **Create and activate a virtual environment**
