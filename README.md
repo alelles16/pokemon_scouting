@@ -39,7 +39,7 @@ pokemon_scout_app/
 1. **Clone the repository**
    ```bash
    git clone https://github.com/alelles16/pokemon_scouting.git
-   cd pokemon_scout_app
+   cd pokemon_scouting
    ```
 2. **Create and activate a virtual environment**
    ```bash
