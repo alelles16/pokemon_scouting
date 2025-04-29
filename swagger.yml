@@ -1,0 +1,106 @@
+swagger: "2.0"
+info:
+  title: Pokémon Scouting API
+  version: "1.0"
+  description: Documentación centralizada en YAML
+schemes:
+  - http
+basePath: /api/pokemon
+paths:
+  /fetch:
+      post:
+        tags:
+          - Pokémon
+        summary: Fetch all Pokémon data from the PokeAPI and store them in the database
+        responses:
+          200:
+            description: List of processed Pokémon objects
+            schema:
+              type: object
+              properties:
+                pokemons:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Pokemon'
+  /:
+    get:
+      tags:
+        - Pokémon
+      summary: List all Pokémon in the database
+      responses:
+        200:
+          description: List of Pokémon
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pokemon'
+  /{name}:
+    get:
+      tags:
+        - Pokémon
+      summary: Get a specific Pokémon by name
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Pokémon data
+          schema:
+            $ref: '#/definitions/Pokemon'
+        404:
+          description: Pokémon not found
+  /add/{name}:
+    post:
+      tags:
+        - Pokémon
+      summary: Add a new Pokémon by name
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+      responses:
+        201:
+          description: Pokémon created
+          schema:
+            $ref: '#/definitions/Pokemon'
+        200:
+          description: Pokémon already exists
+          schema:
+            $ref: '#/definitions/Pokemon'
+        404:
+          description: Pokémon not found in PokeAPI
+  /export:
+    get:
+      tags:
+        - Pokémon
+      summary: Export all Pokémon as CSV or JSON
+      parameters:
+        - name: format
+          in: query
+          required: false
+          type: string
+          default: json
+      responses:
+        200:
+          description: CSV file or JSON array
+definitions:
+  Pokemon:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      base_experience:
+        type: integer
+      height:
+        type: integer
+      weight:
+        type: integer
+      types:
+        type: array
+        items:
+          type: string

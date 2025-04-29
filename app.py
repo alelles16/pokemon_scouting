@@ -11,7 +11,8 @@ cfg = Config()
 app.config["SQLALCHEMY_DATABASE_URI"] = cfg.SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-Swagger(app)
+template_file = 'swagger.yml'
+Swagger(app, template_file=template_file)
 
 # Init db
 db.init_app(app)
